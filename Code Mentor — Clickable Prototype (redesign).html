@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Mentor — Clickable Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600&family=JetBrains+Mono:wght@400;600;700&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+  /* Academic Poster design system — tokens */
+  :root{
+    --teal-900:#075b50; --teal-700:#0b6f62; --teal-500:#218477; --teal-300:#95b9b5;
+    --sage-100:#dce4de; --leaf-300:#a8c98a; --surface:#ffffff; --ink:#000000; --ink-muted:#3d5753; --on-teal:#ffffff;
+    --border-card:var(--teal-900); --focus-ring:var(--teal-700);
+    --code-bg:#053d36; --code-out:#032a25;
+    --font-display:"Anton","Oswald",Impact,"Arial Narrow",sans-serif;
+    --font-sans:"Montserrat",system-ui,sans-serif;
+    --font-mono:"JetBrains Mono",ui-monospace,monospace;
+    --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px; --space-7:48px;
+    --radius-sm:4px; --radius-md:12px; --radius-lg:24px; --radius-full:9999px;
+    --border-hairline:1px; --border-thick:2px; --border-heavy:3px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font-sans);color:var(--ink);background:var(--surface);font-size:15px;line-height:1.5;letter-spacing:.01em}
+  button,select,input,textarea{font:inherit;letter-spacing:inherit}
+  strong,b{font-weight:700}
+
+  /* prototype banner */
+  .proto{background:var(--leaf-300);color:var(--ink);padding:9px 20px;font-size:13px;font-weight:500;text-align:center}
+  .proto strong{font-weight:800}
+
+  /* header */
+  header{background:var(--surface);color:var(--ink);padding:18px 24px 16px;border-bottom:var(--border-heavy) solid var(--teal-900);position:relative}
+  .hwrap{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .brand b{font-family:var(--font-display);font-weight:400;font-size:38px;line-height:1;letter-spacing:.01em;color:var(--teal-900)}
+  .brand span{font-size:13px;font-weight:500;letter-spacing:.06em;color:var(--ink-muted)}
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .tabs{display:flex;background:var(--sage-100);border-radius:var(--radius-md);padding:4px;gap:4px}
+  .tabs button{border:0;background:transparent;color:var(--teal-900);padding:8px 16px;border-radius:9px;cursor:pointer;font-weight:700;font-size:14px;min-height:40px}
+  .tabs button[aria-pressed="true"]{background:var(--teal-900);color:var(--on-teal)}
+  .lang{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--teal-700)}
+  .lang select{border-radius:9px;border:var(--border-thick) solid var(--teal-900);background:var(--surface);color:var(--teal-900);font-weight:600;letter-spacing:.02em;padding:7px 10px;min-height:40px}
+
+  main{max-width:1200px;margin:0 auto;padding:var(--space-5) 24px var(--space-7)}
+
+  /* scenarios */
+  .scen{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:var(--space-5);align-items:center}
+  .scen .lbl{font-family:var(--font-display);font-size:20px;letter-spacing:.02em;color:var(--teal-900);margin-right:8px}
+  .chip{border:var(--border-thick) solid var(--teal-300);background:var(--surface);color:var(--teal-900);border-radius:var(--radius-lg);padding:7px 16px;cursor:pointer;font-size:14px;font-weight:600;min-height:40px}
+  .chip:hover{border-color:var(--teal-700)}
+  .chip[aria-pressed="true"]{background:var(--teal-900);border-color:var(--teal-900);color:var(--on-teal)}
+
+  .grid{display:flex;flex-wrap:wrap;gap:var(--space-5);align-items:flex-start}
+  .col-code{flex:1 1 480px;min-width:0}
+  .col-mentor{flex:1 1 420px;min-width:0}
+
+  /* section card */
+  .card{background:var(--surface);border:var(--border-thick) solid var(--border-card);border-radius:var(--radius-md);overflow:hidden}
+  .card-h{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:0 14px 0 0;background:var(--surface);border-bottom:var(--border-thick) solid var(--border-card);font-family:var(--font-display);font-weight:400;font-size:21px;letter-spacing:.02em;color:var(--teal-900);min-height:50px}
+  .card-h::before{content:"";align-self:stretch;width:46px;flex:none;background:var(--teal-900);border-radius:0 0 var(--radius-md) 0;margin-right:6px;
+    background-image:radial-gradient(circle,var(--leaf-300) 3.5px,transparent 4px);background-size:14px 14px;background-position:2px 4px;background-repeat:repeat}
+  .card-h > span:first-child{flex:1 1 auto;min-width:0;padding:10px 0;line-height:1.1}
+  @media (max-width:520px){.card-h{flex-wrap:wrap}.card-h .badge{margin:0 0 10px 52px}}
+  .badge{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ink);background:var(--leaf-300);border-radius:6px;padding:3px 8px;white-space:nowrap}
+
+  /* code */
+  pre.code{margin:0;background:var(--code-bg);color:#e8f1ee;font-family:var(--font-mono);font-size:13.5px;line-height:25px;padding:12px 0;overflow-x:auto}
+  .ln{display:flex;justify-content:space-between;padding:0 14px;white-space:pre}
+  .ln .no{color:var(--teal-300);display:inline-block;width:28px}
+  .ln.hl{background:var(--teal-500)}
+  .ln.hl .no{color:var(--on-teal)}
+  .ln .mark{color:var(--on-teal);font-weight:700;font-family:var(--font-mono);font-size:12px;letter-spacing:.02em}
+  .kw{color:var(--leaf-300)}.num{color:#f3d98b}.str{color:#cfe6b8}
+  .out{font-family:var(--font-mono);font-size:12.5px;padding:10px 14px;white-space:pre-wrap;line-height:1.55}
+  .out.err{background:var(--code-out);color:#f3d98b;border-top:1px solid #0e4a42}
+  .out.ok{background:var(--code-out);color:#cfe6b8;border-top:1px solid #0e4a42}
+
+  .ask{padding:var(--space-4);display:flex;flex-direction:column;gap:12px;border-top:var(--border-thick) solid var(--border-card)}
+  .q{background:var(--sage-100);border-radius:10px;padding:12px 14px;font-size:14px}
+  .q strong{color:var(--teal-900)}
+
+  /* buttons */
+  .btn{border:0;border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer;min-height:44px;font-size:14px;letter-spacing:.02em}
+  .btn.primary{background:var(--teal-700);color:var(--on-teal)}
+  .btn.primary:hover:not(:disabled){background:var(--teal-900)}
+  .btn.blue{background:var(--teal-900);color:var(--on-teal)}
+  .btn.ghost{background:var(--surface);border:var(--border-thick) solid var(--teal-900);color:var(--teal-900)}
+  .btn.ghost:hover{background:var(--sage-100)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn:focus-visible,.chip:focus-visible,.tabs button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible,.flag:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
+
+  /* mentor */
+  .mentor-body{padding:var(--space-4);display:flex;flex-direction:column;gap:12px}
+  .ladder{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .ladder .t{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--ink-muted);margin-right:4px}
+  .pill{font-size:12.5px;font-weight:700;padding:5px 10px;border-radius:7px;border:var(--border-thick) solid transparent}
+  .pill.done{background:var(--sage-100);color:var(--teal-900)}
+  .pill.cur{background:var(--teal-900);color:var(--on-teal)}
+  .pill.next{border:var(--border-thick) dashed var(--teal-500);color:var(--teal-700)}
+  .pill.lock{border:var(--border-thick) solid var(--sage-100);color:var(--ink-muted);text-decoration:line-through}
+  .hint{background:var(--sage-100);border-radius:var(--radius-md);padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+  .hint.old{background:var(--surface);border:var(--border-hairline) solid var(--teal-300)}
+  .hint .lv{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--teal-700)}
+  .hint p{margin:0;font-size:14.5px;line-height:1.55}
+  .hint strong{color:var(--teal-900)}
+  .hint code{font-family:var(--font-mono);font-size:13px;background:rgba(7,91,80,.1);padding:1px 5px;border-radius:4px}
+  .flag{align-self:flex-start;background:none;border:0;color:var(--ink-muted);font-size:12.5px;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px 0;min-height:32px}
+  .flag:hover{color:var(--teal-900)}
+  .flag[disabled]{color:var(--teal-700);text-decoration:none;cursor:default}
+  .attempt{display:flex;flex-direction:column;gap:8px;border-top:var(--border-hairline) solid var(--teal-300);padding-top:12px}
+  .attempt label{font-size:13px;font-weight:700;color:var(--teal-900)}
+  textarea{width:100%;min-height:76px;border:var(--border-thick) solid var(--teal-300);border-radius:10px;padding:10px 12px;resize:vertical;font-size:14px;color:var(--ink)}
+  textarea::placeholder{color:#6b807c}
+  textarea:focus{border-color:var(--teal-700)}
+  .help{font-size:12.5px;color:var(--ink-muted)}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .note{border-radius:10px;padding:10px 14px;font-size:13.5px}
+  .note.warn{background:var(--surface);border:var(--border-thick) dashed var(--teal-700);color:var(--teal-900);font-weight:500}
+  .note.ok{background:var(--leaf-300);color:var(--ink);font-weight:500}
+  .note.info{background:var(--sage-100);color:var(--teal-900)}
+  .settings-line{font-size:12.5px;color:var(--ink-muted);border-top:var(--border-hairline) solid var(--teal-300);padding-top:10px}
+  .never{font-size:13px;color:var(--teal-700);font-weight:800;letter-spacing:.02em}
+
+  /* instructor */
+  .inst{display:flex;flex-wrap:wrap;gap:var(--space-5)}
+  .inst .card{flex:1 1 460px;min-width:0}
+  .pad{padding:var(--space-4) var(--space-5) var(--space-5);display:flex;flex-direction:column;gap:14px}
+  .phases{display:flex;gap:10px;align-items:flex-end}
+  .phase{flex:1;display:flex;flex-direction:column;gap:4px;border-radius:10px;padding:8px;border:var(--border-thick) solid transparent}
+  .phase.now{border-color:var(--teal-700);background:var(--sage-100)}
+  .blk{height:26px;border-radius:6px;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .b4{background:var(--teal-900);color:var(--on-teal)}.b3{background:var(--teal-700);color:var(--on-teal)}.b2{background:var(--leaf-300);color:var(--ink)}.b1{background:var(--sage-100);color:var(--teal-900)}
+  .phase.now .b1{background:var(--surface)}
+  .phase .w{font-size:12px;font-weight:600;color:var(--ink-muted);text-align:center;padding-top:4px}
+  input[type=range]{width:100%;accent-color:var(--teal-700);min-height:32px}
+  .kv{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+  .kv strong{color:var(--teal-900)}
+  .big{font-family:var(--font-display);font-size:34px;font-weight:400;line-height:1.1;letter-spacing:.01em;color:var(--teal-900)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 6px;border-bottom:var(--border-hairline) solid var(--teal-300);vertical-align:middle}
+  th{font-size:12px;color:var(--teal-700);font-weight:800;letter-spacing:.06em;border-bottom:var(--border-thick) solid var(--teal-900)}
+  td.n{text-align:right;font-variant-numeric:tabular-nums;width:60px;font-weight:700;color:var(--teal-900)}
+  .bar{height:12px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;background:var(--teal-900)}
+  .q-item{border:var(--border-thick) solid var(--sage-100);border-radius:10px;padding:10px 14px;font-size:13.5px;display:flex;flex-direction:column;gap:4px}
+  .q-item .tag{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--teal-700)}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  #ovr{border:var(--border-thick) solid var(--teal-900)!important;border-radius:9px!important;background:var(--surface);color:var(--teal-900);font-weight:600}
+  footer{max-width:1200px;margin:0 auto;padding:var(--space-4) 24px 32px;font-size:12.5px;color:var(--ink-muted);border-top:var(--border-hairline) solid var(--teal-300)}
+</style>
+</head>
+<body>
+<div class="proto" id="proto"></div>
+<header>
+  <div class="hwrap">
+    <div class="brand"><b>Code Mentor</b><span id="tagline"></span></div>
+    <div class="controls">
+      <div class="tabs" role="group" aria-label="View">
+        <button type="button" id="tab-student" aria-pressed="true"></button>
+        <button type="button" id="tab-inst" aria-pressed="false"></button>
+      </div>
+      <label class="lang"><span id="lang-lbl"></span>
+        <select id="lang">
+          <option value="en">English</option>
+          <option value="ru">Русский</option>
+          <option value="kk" disabled>Қазақша (planned)</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</header>
+<main id="app"></main>
+<footer id="foot"></footer>
+<div class="sr" aria-live="polite" id="live"></div>
+
+<script>
+(function(){
+const UI = {
+  en:{
+    proto:'<strong>Prototype.</strong> All mentor answers are pre-written by the team to show the design. No AI is running. Kazakh explanations, the Moodle plugin and live analytics are planned, not built.',
+    tagline:'shows where and why — never writes the fix',
+    student:'Student view', inst:'Instructor view', lang:'Language',
+    scenarios:'Try a scenario:',
+    run:'Output', yourQ:'Student asks', ask:'Ask Code Mentor',
+    mentor:'Mentor', hintLevel:'HINT LEVEL',
+    lvl:['L1 Nudge','L2 Locate','L3 Explain','L4 Model'],
+    lvlFull:['Level 1 · Nudge','Level 2 · Locate','Level 3 · Explain','Level 4 · Model (similar example, not your fix)'],
+    flag:'This seems wrong', flagged:'Sent to a TA for review ✓',
+    attemptLbl:n=>'Your attempt — write what you will try first (unlocks Level '+n+')',
+    attemptPh:'e.g. I think the problem is… so I will try…',
+    attemptHelp:'At least 15 characters. Code Mentor keeps the thinking with you.',
+    submit:'Submit attempt', showLevel:n=>'Show Level '+n,
+    unlocked:n=>'Attempt saved. Level '+n+' is unlocked.',
+    capped:(c,w)=>'Your instructor set the limit to Level '+c+' for this lab (week '+w+'). Try your fix now, or ask your TA in office hours.',
+    allDone:'You have seen every level. Now fix the code yourself.',
+    fixed:'I fixed it', explainLbl:'In one sentence, in your own words: what caused the bug?',
+    explainPh:'The bug happened because…', save:'Save explanation',
+    saved:'Saved. Your instructor sees only anonymised patterns, never your name.',
+    never:'Code Mentor never writes corrected code.',
+    settings:(c,w,o)=>'Instructor settings: max level L'+c+(o?' (manual)':' (fading plan)')+' · week '+w+' of 12 · EN / RU / KZ',
+    lowconfTag:'LOW CONFIDENCE → HUMAN',
+    // instructor
+    fadeTitle:'Fading plan', fadeLead:'The highest hint level students can reach falls as the course goes on.',
+    weekLbl:'Current week', weeks:['Weeks 1–4','Weeks 5–8','Weeks 9–12'],
+    override:'Limit for this lab', auto:'Follow fading plan', manual:n=>'Fixed at L'+n,
+    effective:'Students can currently reach',
+    report:'Misconception report', reportLead:'Anonymised patterns from all students. Sample data for the prototype.',
+    th:['Misconception','Students',''],
+    mis:['Off-by-one in loops / indexes','Empty input not handled (e.g. division by zero)','Changing a list while looping over it','Confusing = and =='],
+    queue:'Review queue (human oversight)', queueLead:'Answers students flagged as wrong, and questions the AI sent to a human.',
+    empty:'Nothing here yet. In Student view, click "This seems wrong" on a hint or try the "grade()" scenario.',
+    flagTag:'FLAGGED HINT', taTag:'SENT TO TA — AI NOT CONFIDENT',
+    privacy:'Privacy: pseudonymous IDs only; no names or grades go to the AI provider. The AI never grades and never reports misconduct.',
+    foot:'Code Mentor — clickable prototype for the Pedagogy of Higher Education final exam (Minds and Machines in Learning). Built with help from Claude (Anthropic); all answers are simulated.'
+  },
+  ru:{
+    proto:'<strong>Прототип.</strong> Все ответы наставника заранее написаны командой, чтобы показать идею. ИИ не работает. Казахский язык, плагин для Moodle и живая аналитика — в планах.',
+    tagline:'показывает где и почему — но не пишет исправление',
+    student:'Студент', inst:'Преподаватель', lang:'Язык',
+    scenarios:'Сценарий:',
+    run:'Вывод', yourQ:'Вопрос студента', ask:'Спросить Code Mentor',
+    mentor:'Наставник', hintLevel:'УРОВЕНЬ ПОДСКАЗКИ',
+    lvl:['L1 Намёк','L2 Место','L3 Объяснение','L4 Пример'],
+    lvlFull:['Уровень 1 · Намёк','Уровень 2 · Где ошибка','Уровень 3 · Объяснение','Уровень 4 · Похожий пример (не ваше решение)'],
+    flag:'Кажется, здесь ошибка', flagged:'Отправлено ассистенту на проверку ✓',
+    attemptLbl:n=>'Ваша попытка — напишите, что попробуете сначала (откроет уровень '+n+')',
+    attemptPh:'например: думаю, проблема в… поэтому попробую…',
+    attemptHelp:'Минимум 15 символов. Думаете вы — Code Mentor только помогает.',
+    submit:'Отправить попытку', showLevel:n=>'Показать уровень '+n,
+    unlocked:n=>'Попытка сохранена. Уровень '+n+' открыт.',
+    capped:(c,w)=>'Преподаватель ограничил подсказки уровнем '+c+' для этой лабораторной (неделя '+w+'). Попробуйте исправить сами или спросите ассистента.',
+    allDone:'Вы посмотрели все уровни. Теперь исправьте код сами.',
+    fixed:'Я исправил(а)', explainLbl:'Одним предложением, своими словами: что вызвало ошибку?',
+    explainPh:'Ошибка возникла, потому что…', save:'Сохранить объяснение',
+    saved:'Сохранено. Преподаватель видит только обезличенную статистику, без вашего имени.',
+    never:'Code Mentor никогда не пишет исправленный код.',
+    settings:(c,w,o)=>'Настройки преподавателя: максимум L'+c+(o?' (вручную)':' (по плану)')+' · неделя '+w+' из 12 · EN / RU / KZ',
+    lowconfTag:'НИЗКАЯ УВЕРЕННОСТЬ → ЧЕЛОВЕК',
+    fadeTitle:'План снижения поддержки', fadeLead:'Максимальный уровень подсказки снижается по ходу курса.',
+    weekLbl:'Текущая неделя', weeks:['Недели 1–4','Недели 5–8','Недели 9–12'],
+    override:'Ограничение для этой лабораторной', auto:'По плану', manual:n=>'Всегда L'+n,
+    effective:'Сейчас студентам доступен',
+    report:'Отчёт о типичных ошибках', reportLead:'Обезличенные данные по всем студентам. Пример данных для прототипа.',
+    th:['Ошибка','Студентов',''],
+    mis:['Ошибка на единицу в циклах и индексах','Пустой ввод не обработан (деление на ноль)','Изменение списка во время цикла','Путаница = и =='],
+    queue:'Очередь проверки (контроль человека)', queueLead:'Подсказки, отмеченные студентами как неверные, и вопросы, переданные ИИ человеку.',
+    empty:'Пока пусто. В режиме студента нажмите «Кажется, здесь ошибка» или откройте сценарий grade().',
+    flagTag:'ОТМЕЧЕННАЯ ПОДСКАЗКА', taTag:'ПЕРЕДАНО АССИСТЕНТУ — ИИ НЕ УВЕРЕН',
+    privacy:'Приватность: только псевдонимные ID; имена и оценки не передаются ИИ-провайдеру. ИИ не ставит оценки и не сообщает о нарушениях.',
+    foot:'Code Mentor — кликабельный прототип для финального экзамена по Pedagogy of Higher Education. Сделан с помощью Claude (Anthropic); все ответы смоделированы.'
+  }
+};
+
+const K=s=>'<span class="kw">'+s+'</span>', N=s=>'<span class="num">'+s+'</span>', S=s=>'<span class="str">'+s+'</span>';
+
+const SCEN = {
+  avg:{
+    name:{en:'Lab 3 · average()',ru:'Лаб. 3 · average()'},
+    file:'lab3_average.py',
+    code:[K('def')+' average(nums):','    total = '+N('0'),'    '+K('for')+' n '+K('in')+' nums:','        total += n','    '+K('return')+' total / len(nums)','',K('print')+'(average([]))'],
+    hl:[5],
+    out:{kind:'err',text:'Traceback (most recent call last):\n  File "lab3_average.py", line 7\n  File "lab3_average.py", line 5, in average\nZeroDivisionError: division by zero'},
+    q:{en:'My average() works in class but crashes here. Why?',ru:'average() работала на паре, а тут падает. Почему?'},
+    levels:{
+      en:['Your function works for some lists but not for every list. Look at the input on line 7. What is special about it?',
+          'The crash is on line 5: <code>total / len(nums)</code>. When <code>nums</code> is empty, <code>len(nums)</code> is 0, and dividing by 0 is not allowed.',
+          'This is about <strong>edge cases</strong>. A function should decide what to do with unusual input <em>before</em> it calculates. Programmers use a <strong>guard condition</strong>: check the special case first and return early. What result makes sense for the average of no numbers: 0, nothing, or a clear error message?',
+          'Similar example, different problem: a function returns the first letter of a word. An empty word has no first letter, so the steps are: (1) if the word is empty, return an empty string; (2) otherwise return the first character. Now apply the same two steps to <code>average()</code>.'],
+      ru:['Функция работает для одних списков, но не для всех. Посмотрите на входные данные в строке 7. Что в них особенного?',
+          'Падение в строке 5: <code>total / len(nums)</code>. Если <code>nums</code> пустой, <code>len(nums)</code> равно 0, а делить на 0 нельзя.',
+          'Речь о <strong>граничных случаях</strong>. Функция должна решить, что делать с необычным вводом, <em>до</em> вычислений. Для этого используют <strong>защитное условие</strong>: сначала проверить особый случай и сразу вернуть результат. Что разумно вернуть для среднего пустого списка: 0, ничего или понятное сообщение об ошибке?',
+          'Похожий пример, другая задача: функция возвращает первую букву слова. У пустого слова первой буквы нет, поэтому шаги такие: (1) если слово пустое — вернуть пустую строку; (2) иначе — вернуть первый символ. Примените те же два шага к <code>average()</code>.']
+    }
+  },
+  idx:{
+    name:{en:'Lab 4 · print_scores()',ru:'Лаб. 4 · print_scores()'},
+    file:'lab4_scores.py',
+    code:[K('def')+' print_scores(scores):','    '+K('for')+' i '+K('in')+' range('+N('1')+', len(scores) + '+N('1')+'):','        '+K('print')+'(i, scores[i])','',K('print')+'_scores(['+N('90')+', '+N('75')+', '+N('82')+'])'],
+    hl:[2,3],
+    out:{kind:'err',text:'1 75\n2 82\nTraceback (most recent call last):\n  File "lab4_scores.py", line 3, in print_scores\nIndexError: list index out of range'},
+    q:{en:'The first score is missing and then it crashes. What is going on?',ru:'Первая оценка пропала, а потом программа падает. Что происходит?'},
+    levels:{
+      en:['Two things look odd: 90 never appears, and the program crashes at the end. Both come from the same place. Where do list positions start in Python?',
+          'Look at line 2: <code>range(1, len(scores) + 1)</code> gives 1, 2, 3. But the list has positions 0, 1, 2. So <code>scores[0]</code> is skipped and <code>scores[3]</code> does not exist.',
+          'This is an <strong>off-by-one error</strong>. Python lists are <strong>zero-indexed</strong>: valid positions go from 0 to len − 1. Your loop mixes up the number you want to <em>print</em> (1, 2, 3) with the <em>position</em> in the list (0, 1, 2). How could you keep those two ideas separate?',
+          'Similar example: three chairs in a row sit at positions 0, 1, 2, but people call them "seat 1, 2, 3". You still walk through positions 0, 1, 2 and only add 1 when you say the seat number. Try the same split in your loop.'],
+      ru:['Две странности: 90 не выводится, а в конце программа падает. Обе идут из одного места. С какой позиции начинаются списки в Python?',
+          'Посмотрите на строку 2: <code>range(1, len(scores) + 1)</code> даёт 1, 2, 3. А в списке позиции 0, 1, 2. Поэтому <code>scores[0]</code> пропускается, а <code>scores[3]</code> не существует.',
+          'Это <strong>ошибка на единицу</strong>. Индексы в Python начинаются с <strong>нуля</strong>: допустимы позиции от 0 до len − 1. Цикл смешивает номер, который нужно <em>вывести</em> (1, 2, 3), с <em>позицией</em> в списке (0, 1, 2). Как разделить эти две вещи?',
+          'Похожий пример: три стула стоят на позициях 0, 1, 2, но люди называют их «место 1, 2, 3». Вы всё равно проходите позиции 0, 1, 2 и прибавляете 1, только когда называете номер места. Сделайте такое же разделение в цикле.']
+    }
+  },
+  grade:{
+    name:{en:'Lab 5 · grade() — no error',ru:'Лаб. 5 · grade() — без ошибки'},
+    file:'lab5_grade.py',
+    code:[K('def')+' grade(score):','    '+K('if')+' score >= '+N('90')+':','        '+K('return')+' '+S('"A"'),'    '+K('elif')+' score >= '+N('75')+':','        '+K('return')+' '+S('"B"'),'    '+K('return')+' '+S('"C"')],
+    hl:[],
+    out:{kind:'ok',text:'>>> grade(80)\n\'B\'\n(no error)'},
+    q:{en:'My TA says some grades are wrong, but there is no error. What is wrong?',ru:'Ассистент говорит, что некоторые оценки неверны, но ошибки нет. Что не так?'},
+    lowconf:{
+      en:'I am <strong>not confident</strong> here. The code runs without errors, and the correct grade boundaries depend on your lab task sheet, which I cannot see. Instead of guessing, I have sent your question to the TA queue. Meanwhile, compare each boundary in your code (90, 75) with the task sheet.',
+      ru:'Здесь я <strong>не уверен</strong>. Код работает без ошибок, а правильные границы оценок зависят от условия лабораторной, которого я не вижу. Чтобы не гадать, я отправил ваш вопрос ассистенту. А пока сравните каждую границу в коде (90, 75) с условием задания.'
+    }
+  }
+};
+
+const MIS_COUNTS=[22,14,6,9];
+
+function fresh(){return {asked:false,shown:0,unlocked:0,attempts:0,flagged:{},fixOpen:false,saved:false,note:''};}
+const st={view:'student',lang:'en',scen:'avg',week:6,override:'auto',per:{avg:fresh(),idx:fresh(),grade:fresh()},queue:[]};
+
+function cap(){return st.override!=='auto'?+st.override:(st.week<=4?4:st.week<=8?3:2);}
+function t(){return UI[st.lang];}
+function live(msg){const el=document.getElementById('live');el.textContent='';setTimeout(()=>{el.textContent=msg.replace(/<[^>]+>/g,'');},30);}
+
+function chrome(){
+  const u=t();
+  document.documentElement.lang=st.lang==='ru'?'ru':'en';
+  document.getElementById('proto').innerHTML=u.proto;
+  document.getElementById('tagline').textContent=u.tagline;
+  document.getElementById('lang-lbl').textContent=u.lang;
+  const ts=document.getElementById('tab-student'), ti=document.getElementById('tab-inst');
+  ts.textContent=u.student; ti.textContent=u.inst;
+  ts.setAttribute('aria-pressed',st.view==='student'); ti.setAttribute('aria-pressed',st.view==='inst');
+  document.getElementById('foot').textContent=u.foot;
+}
+
+function codeHTML(sc,show){
+  return sc.code.map((l,i)=>{
+    const n=i+1, on=show&&sc.hl.includes(n);
+    const mark=on&&n===sc.hl[0]?'<span class="mark">◀ '+(st.lang==='ru'?'смотрите сюда':'look here')+'</span>':'';
+    return '<span class="ln'+(on?' hl':'')+'"><span><span class="no">'+n+'</span>'+(l||' ')+'</span>'+mark+'</span>';
+  }).join('');
+}
+
+function ladderHTML(p){
+  const u=t(), c=cap();
+  let h='<div class="ladder"><span class="t">'+u.hintLevel+'</span>';
+  for(let i=1;i<=4;i++){
+    let cls='next';
+    if(i>c) cls='lock';
+    else if(i<p.shown) cls='done';
+    else if(i===p.shown) cls='cur';
+    h+='<span class="pill '+cls+'">'+u.lvl[i-1]+(cls==='done'?' ✓':'')+(cls==='lock'?(st.lang==='ru'?' · закрыт':' · locked'):'')+'</span>';
+  }
+  return h+'</div>';
+}
+
+function studentView(){
+  const u=t(), sc=SCEN[st.scen], p=st.per[st.scen], c=cap();
+  let h='<div class="scen"><span class="lbl">'+u.scenarios+'</span>';
+  for(const k of Object.keys(SCEN)) h+='<button type="button" class="chip" data-scen="'+k+'" aria-pressed="'+(k===st.scen)+'">'+SCEN[k].name[st.lang]+'</button>';
+  h+='</div><div class="grid">';
+  // code column
+  h+='<div class="col-code"><div class="card"><div class="card-h"><span>'+sc.file+'</span><span class="badge">'+u.run.toUpperCase()+'</span></div>';
+  h+='<pre class="code" aria-label="Student code">'+codeHTML(sc,p.asked)+'</pre>';
+  h+='<div class="out '+sc.out.kind+'">'+sc.out.text.replace(/</g,'&lt;')+'</div>';
+  h+='<div class="ask"><div class="q"><strong>'+u.yourQ+':</strong> '+sc.q[st.lang]+'</div>';
+  if(!p.asked) h+='<button type="button" class="btn primary" id="ask">'+u.ask+'</button>';
+  h+='</div></div></div>';
+  // mentor column
+  h+='<div class="col-mentor"><div class="card"><div class="card-h"><span>'+u.mentor+'</span><span class="badge">PROTOTYPE · SIMULATED AI</span></div><div class="mentor-body" aria-live="polite">';
+  if(!p.asked){
+    h+='<div class="note info">'+(st.lang==='ru'?'Нажмите «Спросить Code Mentor», чтобы начать.':'Click "Ask Code Mentor" to start.')+'</div>';
+  } else if(sc.lowconf){
+    h+='<div class="hint"><span class="lv">'+u.lowconfTag+'</span><p>'+sc.lowconf[st.lang]+'</p></div>';
+  } else {
+    h+=ladderHTML(p);
+    for(let i=1;i<=p.shown;i++){
+      const key=st.scen+'-'+i, fl=p.flagged[i];
+      h+='<div class="hint'+(i<p.shown?' old':'')+'"><span class="lv">'+u.lvlFull[i-1].toUpperCase()+'</span><p>'+sc.levels[st.lang][i-1]+'</p>'+
+         '<button type="button" class="flag" data-flag="'+i+'"'+(fl?' disabled':'')+'>'+(fl?u.flagged:u.flag)+'</button></div>';
+    }
+    if(p.note) h+='<div class="note ok">'+p.note+'</div>';
+    const next=p.shown+1;
+    if(p.shown>=4){ h+='<div class="note info">'+u.allDone+'</div>'; }
+    else if(next>c){ h+='<div class="note warn">'+u.capped(c,st.week)+'</div>'; }
+    else if(p.unlocked>=next){ h+='<button type="button" class="btn blue" id="show-next">'+u.showLevel(next)+'</button>'; }
+    else {
+      h+='<div class="attempt"><label for="att">'+u.attemptLbl(next)+'</label><textarea id="att" placeholder="'+u.attemptPh+'"></textarea><span class="help" id="att-help">'+u.attemptHelp+'</span><div class="row"><button type="button" class="btn primary" id="submit-att" disabled>'+u.submit+'</button></div></div>';
+    }
+    // fixed it
+    if(!p.saved){
+      if(!p.fixOpen) h+='<div class="row"><button type="button" class="btn ghost" id="fixed">'+u.fixed+'</button></div>';
+      else h+='<div class="attempt"><label for="expl">'+u.explainLbl+'</label><textarea id="expl" placeholder="'+u.explainPh+'"></textarea><div class="row"><button type="button" class="btn blue" id="save-expl" disabled>'+u.save+'</button></div></div>';
+    } else h+='<div class="note ok">'+u.saved+'</div>';
+  }
+  h+='<div class="never">'+u.never+'</div>';
+  h+='<div class="settings-line">'+u.settings(c,st.week,st.override!=='auto')+'</div>';
+  h+='</div></div></div></div>';
+  return h;
+}
+
+function instView(){
+  const u=t(), c=cap();
+  const cur=st.week<=4?0:st.week<=8?1:2;
+  const stacks=[[4,3,2,1],[3,2,1],[2,1]];
+  let ph='<div class="phases">';
+  stacks.forEach((s,i)=>{
+    ph+='<div class="phase'+(i===cur&&st.override==='auto'?' now':'')+'">'+s.map(l=>'<span class="blk b'+l+'">'+u.lvl[l-1]+'</span>').join('')+'<span class="w">'+u.weeks[i]+'</span></div>';
+  });
+  ph+='</div>';
+  let h='<div class="inst">';
+  h+='<div class="card"><div class="card-h"><span>'+u.fadeTitle+'</span><span class="badge">LAB 3 · LAB 4 · LAB 5</span></div><div class="pad">';
+  h+='<span class="help">'+u.fadeLead+'</span>'+ph;
+  h+='<div><label for="week" class="kv"><span><strong>'+u.weekLbl+'</strong></span><span>'+st.week+' / 12</span></label><input type="range" id="week" min="1" max="12" value="'+st.week+'"></div>';
+  h+='<div><label for="ovr"><strong>'+u.override+'</strong></label><br><select id="ovr" style="margin-top:6px;border:1px solid #CBD5E1;border-radius:8px;padding:8px 10px;min-height:40px">'+
+     '<option value="auto"'+(st.override==='auto'?' selected':'')+'>'+u.auto+'</option>'+
+     [1,2,3,4].map(n=>'<option value="'+n+'"'+(st.override===String(n)?' selected':'')+'>'+u.manual(n)+'</option>').join('')+'</select></div>';
+  h+='<div class="kv" style="align-items:center"><span>'+u.effective+'</span><span class="big">'+u.lvl[c-1]+'</span></div>';
+  h+='</div></div>';
+  // report
+  const max=Math.max(...MIS_COUNTS);
+  h+='<div class="card"><div class="card-h"><span>'+u.report+'</span><span class="badge">SAMPLE DATA</span></div><div class="pad"><span class="help">'+u.reportLead+'</span><table><thead><tr><th>'+u.th[0]+'</th><th style="text-align:right">'+u.th[1]+'</th><th style="width:30%"></th></tr></thead><tbody>';
+  u.mis.forEach((m,i)=>{h+='<tr><td>'+m+'</td><td class="n">'+MIS_COUNTS[i]+'</td><td><div class="bar" style="width:'+Math.round(MIS_COUNTS[i]/max*100)+'%"></div></td></tr>';});
+  h+='</tbody></table></div></div>';
+  // queue
+  h+='<div class="card"><div class="card-h"><span>'+u.queue+'</span><span class="badge">'+st.queue.length+'</span></div><div class="pad"><span class="help">'+u.queueLead+'</span>';
+  if(!st.queue.length) h+='<div class="note info">'+u.empty+'</div>';
+  else st.queue.slice().reverse().forEach(q=>{
+    const sc=SCEN[q.scen];
+    if(q.type==='flag') h+='<div class="q-item"><span class="tag">'+u.flagTag+' · '+sc.name[st.lang]+' · '+u.lvl[q.level-1]+'</span><span>'+sc.levels[st.lang][q.level-1]+'</span></div>';
+    else h+='<div class="q-item"><span class="tag">'+u.taTag+' · '+sc.name[st.lang]+'</span><span>'+sc.q[st.lang]+'</span></div>';
+  });
+  h+='<div class="note warn">'+u.privacy+'</div></div></div>';
+  h+='</div>';
+  return h;
+}
+
+function render(){
+  chrome();
+  document.getElementById('app').innerHTML = st.view==='student'?studentView():instView();
+  bind();
+}
+
+function bind(){
+  const $=id=>document.getElementById(id);
+  document.querySelectorAll('[data-scen]').forEach(b=>b.onclick=()=>{st.scen=b.dataset.scen;render();});
+  const p=st.per[st.scen], sc=SCEN[st.scen];
+  if($('ask')) $('ask').onclick=()=>{
+    p.asked=true;
+    if(sc.lowconf){ if(!st.queue.some(q=>q.type==='ta'&&q.scen===st.scen)) st.queue.push({type:'ta',scen:st.scen}); }
+    else { p.shown=1; p.unlocked=1; }
+    render(); live(sc.lowconf?sc.lowconf[st.lang]:sc.levels[st.lang][0]);
+  };
+  const att=$('att'), sub=$('submit-att');
+  if(att&&sub){
+    att.oninput=()=>{sub.disabled=att.value.trim().length<15;};
+    sub.onclick=()=>{
+      if(att.value.trim().length<15) return;
+      p.attempts++; p.unlocked=p.shown+1; p.note=t().unlocked(p.unlocked);
+      render(); live(p.note); const b=$('show-next'); if(b) b.focus();
+    };
+  }
+  if($('show-next')) $('show-next').onclick=()=>{p.shown++; p.note=''; render(); live(sc.levels[st.lang][p.shown-1]);};
+  document.querySelectorAll('[data-flag]').forEach(b=>b.onclick=()=>{
+    const lv=+b.dataset.flag; if(p.flagged[lv]) return;
+    p.flagged[lv]=true; st.queue.push({type:'flag',scen:st.scen,level:lv}); render(); live(t().flagged);
+  });
+  if($('fixed')) $('fixed').onclick=()=>{p.fixOpen=true;render();const e=$('expl'); if(e) e.focus();};
+  const ex=$('expl'), sv=$('save-expl');
+  if(ex&&sv){ ex.oninput=()=>{sv.disabled=ex.value.trim().length<10;}; sv.onclick=()=>{p.saved=true;render();live(t().saved);}; }
+  if($('week')) $('week').oninput=e=>{st.week=+e.target.value; render(); const w=$('week'); if(w) w.focus();};
+  if($('ovr')) $('ovr').onchange=e=>{st.override=e.target.value; render(); const o=$('ovr'); if(o) o.focus();};
+}
+
+document.getElementById('tab-student').onclick=()=>{st.view='student';render();};
+document.getElementById('tab-inst').onclick=()=>{st.view='inst';render();};
+document.getElementById('lang').onchange=e=>{st.lang=e.target.value;render();};
+render();
+})();
+</script>
+</body>
+</html>
